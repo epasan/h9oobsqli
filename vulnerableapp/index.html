@@ -1,0 +1,168 @@
+<!doctype html>
+
+<?php 
+
+    require_once("db_connect.php"); 
+    ini_set("display_errors", 0);
+    $useragent = $_SERVER["HTTP_USER_AGENT"];
+
+    $query = "SELECT * FROM viewers_user_agent WHERE useragentsha256=SHA2('" . 
+              $useragent . "',256)";
+    
+    try {
+
+        if(stripos($query, "sleep") or stripos($query,"benchmark")) {
+            throw new PDOException("The use of sleep or benchmark");
+        }
+
+        $results = $db->query($query);
+        $data = $results->fetchAll();
+        if(!$data) {
+
+            $insert_query = "INSERT INTO viewers_user_agent VALUES (SHA2(:sha,256),:useragent,:counter,:bot)";
+            $statement = $db->prepare($insert_query);
+            $statement->execute([
+                "sha" => $useragent,
+                "useragent" => $useragent,
+                "counter" => 1,
+                "bot" => "N/A"
+            ]);
+
+        } else {
+
+            $sha = $data[0]["useragentsha256"];
+            $counter = (int) $data[0]["counter"]+1;
+            $update_query = "UPDATE viewers_user_agent SET counter=:counter WHERE useragentsha256=:sha";
+
+            $statement = $db->prepare($update_query);
+            $statement->execute([
+                "counter" => $counter,
+                "sha" => $sha
+            ]);
+
+        }
+
+    } catch (PDOException $e) {
+        
+        // do nothing. Fall silently
+
+    }
+
+?>
+
+<html lang="en">
+
+  <head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <title>Proc Live</title>
+  </head>
+
+  <body>
+    		
+		<header class="container-fluid bg-danger text-white py-1">
+			<div class="container">
+				<h1 class="display-4 mb-0">Proc Live</h1>
+				<p class="lead">Your Threat Intelligence Provider</h2>
+			</div>
+		</header>
+		
+		<main class="container-fluid my-5">
+			<section class="container">
+				<article class="blockquoute">
+					<h1 class="display-4 text-center">Threat Intelligence services to prevent and detect cyber threats</h1>
+				</article>
+			</section>
+			<section class="container my-5">
+				<article class="row">
+					<div class="col">
+						<div class="card" style="width: 18rem;">
+							<img src="https://placekitten.com/g/250/150" class="card-img-top" alt="...">
+							<div class="card-body">
+								<h5 class="card-title">Darknet Investigation</h5>
+								<p class="card-text">If you want to know more about this service, please click on the button down below</p>
+								<a href="#" class="btn btn-primary">Darknet</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card" style="width: 18rem;">
+							<img src="https://placekitten.com/g/250/150" class="card-img-top" alt="...">
+							<div class="card-body">
+								<h5 class="card-title">Social Networks</h5>
+								<p class="card-text">If you want to know more about this service, please click on the button down below</p>
+								<a href="#" class="btn btn-primary">Social Networks</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card" style="width: 18rem;">
+							<img src="https://placekitten.com/g/250/150" class="card-img-top" alt="...">
+							<div class="card-body">
+								<h5 class="card-title">Open Source Intelligence</h5>
+								<p class="card-text">If you want to know more about this service, please click on the button down below</p>
+								<a href="#" class="btn btn-primary">OSINT</a>
+							</div>
+						</div>
+					</div>
+					
+				</article>
+				
+				<article class="row mt-5">
+					<div class="col">
+						<div class="card" style="width: 18rem;">
+							<img src="https://placekitten.com/g/250/150" class="card-img-top" alt="...">
+							<div class="card-body">
+								<h5 class="card-title">Social Engineering</h5>
+								<p class="card-text">If you want to know more about this service, please click on the button down below</p>
+								<a href="#" class="btn btn-primary">Social Engineering</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card" style="width: 18rem;">
+							<img src="https://placekitten.com/g/250/150" class="card-img-top" alt="...">
+							<div class="card-body">
+								<h5 class="card-title">Machine Learning</h5>
+								<p class="card-text">If you want to know more about this service, please click on the button down below</p>
+								<a href="#" class="btn btn-primary">Machine Learning</a>
+							</div>
+						</div>
+					</div>
+					<div class="col">
+						<div class="card" style="width: 18rem;">
+							<img src="https://placekitten.com/g/250/150" class="card-img-top" alt="...">
+							<div class="card-body">
+								<h5 class="card-title">Reporting</h5>
+								<p class="card-text">If you want to know more about this service, please click on the button down below</p>
+								<a href="#" class="btn btn-primary">Reporting</a>
+							</div>
+						</div>
+					</div>
+					
+				</article>
+				
+			</section>
+		</main>
+		
+		<footer class="container-fluid bg-danger text-white py-2">
+			<div class="container">
+				<p class="text-center mt-2">&copy; 2020 Proc Live</p>
+			</div>
+		</footer>
+		
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-3.4.1.slim.min.js"></script>
+    <script src="js/popper.min.js" ></script>
+    <script src="js/bootstrap.min.js"></script>
+
+  </body>
+
+</html>

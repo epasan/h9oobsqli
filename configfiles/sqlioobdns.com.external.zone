@@ -1,0 +1,17 @@
+$ORIGIN sqlioobdns.com.
+$TTL 86400
+@	IN	SOA	ns1.sqlioobdns.com. hostmaster.sqlioobdns.com. (
+		2020072201	; serial
+		21600		; refresh
+		3600		; retry
+		604800		; expire
+		86400 )		; negative response
+
+; name server records
+@	IN	NS	ns1.sqlioobdns.com.
+@	IN	NS	ns2.sqlioobdns.com.
+
+; A records
+@	IN	A	1xx.xxx.xxx.xx2
+ns1	IN	A	1xx.xxx.xxx.xx2
+ns2	IN	A	1xx.xxx.xxx.xx2
